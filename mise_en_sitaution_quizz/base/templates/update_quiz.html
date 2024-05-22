@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Update Quiz</title>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <!-- Font Awesome CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        .add-icon, .remove-icon {
+            cursor: pointer;
+            color: blue;
+            margin-left: 10px;
+        }
+        .remove-icon {
+            color: red;
+        }
+
+        .question_container {
+            margin: 10px;
+            padding: 10px;
+            border-radius: 10px;
+            background-color: rgb(194, 248, 255);
+        }
+        .choices_container {
+            margin: 10px;
+            padding: 10px;
+            border-radius: 10px;
+            background-color: rgb(255, 194, 194);
+        }
+        .btn-success,
+        .btn-danger {
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <div class="container mt-5">
+        <h1>Update Quiz</h1>
+        <form method="post">
+            {% csrf_token %}
+            <div class="form-group">
+                {{ quiz_form.as_p }}
+            </div>
+            <div class="row">
+                <div class="col-6">
+                    <h2 class="text-left">
+                        Questions
+                    </h2>
+                </div>
+                <div class="col-6 text-right">
+                    <button type="button" id="add-question" class="btn btn-success add-icon">Add question</button>
+                </div>
+            </div>
+            <div id="questions">
+                {{ question_formset.management_form }}
+                {% for question_form in question_formset %}
+                    <div class="question-form mb-3 question_container">
+                        <div class="form-group">
+                            <div class="row">
+                                <div class="col-8">
+                                    {{ question_form.as_p }}
+                                </div>
+                                <div class="col-4">
+                                    <button type="button" class="btn btn-danger remove-icon remove-question">Remove question</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-6">
+                                <h3 class="text-left">
+                                    Choices
+                                </h3>
+                            </div>
+                            <div class="col-6 text-right">
+                                <button type="button" class="btn btn-success add-icon add-choice">Add choice</button>
+                            </div>
+                        </div>
+                        <div class="choices">
+                            {{ choice_formset.management_form }}
+                            {% for choice_form in choice_formset %}
+                                <div class="choice-form choices_container mb-2">
+                                    <div class="form-group">
+                                        <div class="row">
+                                            <div class="col-8 d-flex">
+                                                {{ choice_form.as_p }}
+                                            </div>
+                                            <div class="col-4">
+                                                <button type="button" class="btn btn-danger remove-icon remove-choice">Remove choice</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+            <button type="submit" class="btn btn-primary">Update Quiz</button>
+        </form>
+    </div>
+
+    <script>
+        $(document).ready(function () {
+            function updateElementIndex(el, prefix, ndx) {
+                var id_regex = new RegExp('(' + prefix + '-\\d+)', 'g');
+                var replacement = prefix + '-' + ndx;
+                $(el).find(':input, label').each(function () {
+                    var $this = $(this);
+                    if ($this.attr("for")) {
+                        $this.attr("for", $this.attr("for").replace(id_regex, replacement));
+                    }
+                    if (this.id) {
+                        this.id = this.id.replace(id_regex, replacement);
+                    }
+                    if (this.name) {
+                        this.name = this.name.replace(id_regex, replacement);
+                    }
+                });
+            }
+
+            function cloneMore(selector, prefix) {
+                var newElement = $(selector).clone(true);
+                var total = $('#id_' + prefix + '-TOTAL_FORMS').val();
+                newElement.find(':input').each(function () {
+                    if ($(this).attr('name')) {
+                        var name = $(this).attr('name').replace('-' + (total - 1) + '-', '-' + total + '-');
+                        var id = 'id_' + name;
+                        $(this).attr({ 'name': name, 'id': id }).val('').removeAttr('checked');
+                    }
+                });
+                newElement.find('label').each(function () {
+                    var forValue = $(this).attr('for');
+                    if (forValue) {
+                        forValue = forValue.replace('-' + (total - 1) + '-', '-' + total + '-');
+                        $(this).attr({ 'for': forValue });
+                    }
+                });
+                total++;
+                $('#id_' + prefix + '-TOTAL_FORMS').val(total);
+                $(selector).after(newElement);
+            }
+
+            function updateIndexes() {
+                $('.question-form').each(function (index) {
+                    updateElementIndex(this, 'questions', index);
+                    $(this).find('.choice-form').each(function (sub_index) {
+                        updateElementIndex(this, 'choices', sub_index);
+                    });
+                });
+            }
+
+            $('#add-question').click(function () {
+                cloneMore('.question-form:last', 'questions');
+                updateIndexes();
+            });
+
+            $(document).on('click', '.add-choice', function () {
+                var questionForm = $(this).closest('.question-form');
+                cloneMore(questionForm.find('.choice-form:last'), 'choices');
+                updateIndexes();
+            });
+
+            $(document).on('click', '.remove-question', function () {
+                if ($('.question-form').length > 1) {
+                    $(this).closest('.question-form').remove();
+                    updateIndexes();
+                }
+            });
+
+            $(document).on('click', '.remove-choice', function () {
+                if ($(this).closest('.choices').find('.choice-form').length > 1) {
+                    $(this).closest('.choice-form').remove();
+                    updateIndexes();
+                }
+            });
+        });
+    </script>
+</body>
+</html>
