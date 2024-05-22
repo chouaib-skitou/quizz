@@ -1,40 +1,215 @@
 {% extends "base.html" %}
 {% block style %}
 <style>
-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin: 20px 0;
-    font-size: 1.2em;
-    text-align: left;
+    *,
+*::before,
+*::after {
+  box-sizing: border-box;
 }
-th, td {
-    padding: 20px;
-    border-bottom: 1px solid #aa1313;
-    text-align: center;
+
+body {
+  min-height: 450px;
+  height: 100vh;
+  margin: 0;  
+  background: radial-gradient(ellipse farthest-corner at center top, #f39264 0%, #f2606f 100%);
+  color: #fff;
+  font-family: 'Open Sans', sans-serif;  
+}
+
+.leaderboard {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 70%;
+  height: 308px;
+  background: linear-gradient(to bottom, #3a404d, #181c26);
+  border-radius: 10px;
+  box-shadow: 0 7px 30px rgba(62, 9, 11, .3);
+}
+
+.leaderboard h1 {
+  font-size: 18px;
+  color: #e1e1e1;
+  padding: 12px 13px 18px;
+}
+
+.leaderboard h1 svg {
+  width: 25px;
+  height: 26px;
+  position: relative;
+  top: 3px;
+  margin-right: 6px;
+  vertical-align: baseline;
+}
+
+.leaderboard ul {
+  counter-reset: leaderboard;
+  list-style: none; /* Removes the bullets from the list */
+  padding: 0; /* Resets any default padding */
+  margin: 0; /* Resets any default margin */
+}
+
+.leaderboard ul li {
+  position: relative;
+  z-index: 1;
+  font-size: 14px;
+  counter-increment: leaderboard;
+  padding: 18px 10px 18px 50px;
+  cursor: pointer;
+  backface-visibility: hidden;
+  transform: translateZ(0) scale(1.0, 1.0);
+  background: #808080; /* Default background color for all items */
+}
+
+.leaderboard ul li::before {
+  content: counter(leaderboard);
+  position: absolute;
+  z-index: 2;
+  top: 15px;
+  left: 15px;
+  width: 20px;
+  height: 20px;
+  line-height: 20px;
+  color: #c24448;
+  background: #fff;
+  border-radius: 20px;
+  text-align: center;
+}
+
+.leaderboard ul li mark {
+  position: absolute;
+  z-index: 2;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  padding: 18px 10px 18px 50px;
+  margin: 0;
+  background: none;
+  color: #fff;
+}
+
+.leaderboard ul li mark::before,
+.leaderboard ul li mark::after {
+  content: '';
+  position: absolute;
+  z-index: 1;
+  bottom: -11px;
+  left: -9px;
+  border-top: 10px solid #c24448;
+  border-left: 10px solid transparent;
+  transition: all .1s ease-in-out;
+  opacity: 0;
+}
+
+.leaderboard ul li mark::after {
+  left: auto;
+  right: -9px;
+  border-left: none;
+  border-right: 10px solid transparent;
+}
+
+.leaderboard ul li small {
+  position: relative;
+  z-index: 2;
+  display: block;
+  text-align: right;
+}
+
+.leaderboard ul li::after {
+  content: '';
+  position: absolute;
+  z-index: 1;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: #fa6855;
+  box-shadow: 0 3px 0 rgba(0, 0, 0, .08);
+  transform: scaleX(1.06) scaleY(1.03);
+  transition: all .3s ease-in-out;
+  opacity: 0;
+}
+
+/* Specific colors for the first three items */
+.leaderboard ul li:nth-child(1) {
+  background: #fa6855;
+}
+
+.leaderboard ul li:nth-child(1)::after {
+  background: #fa6855;
+}
+
+.leaderboard ul li:nth-child(2) {
+  background: #e0574f;
+}
+
+.leaderboard ul li:nth-child(2)::after {
+  background: #e0574f;
+  box-shadow: 0 2px 0 rgba(0, 0, 0, .08);
+}
+
+.leaderboard ul li:nth-child(2) mark::before,
+.leaderboard ul li:nth-child(2) mark::after {
+  border-top: 6px solid #ba4741;
+  bottom: -7px;
+}
+
+.leaderboard ul li:nth-child(3) {
+  background: #d7514d;
+}
+
+.leaderboard ul li:nth-child(3)::after {
+  background: #d7514d;
+  box-shadow: 0 1px 0 rgba(0, 0, 0, .11);
+}
+
+.leaderboard ul li:nth-child(3) mark::before,
+.leaderboard ul li:nth-child(3) mark::after {
+  border-top: 2px solid #b0433f;
+  bottom: -3px;
+}
+
+.leaderboard ul li:hover {
+  z-index: 2;
+  overflow: visible;
+}
+
+.leaderboard ul li:hover::after {
+  opacity: 1;
+  transform: scaleX(1.06) scaleY(1.03);
+}
+
+.leaderboard ul li:hover mark::before,
+.leaderboard ul li:hover mark::after {
+  opacity: 1;
+  transition: all .35s ease-in-out;
 }
 </style>
+
 {% endblock style %}
 
 {% block title %}
  Classement
 {% endblock title %}
 {% block content %}
-<div class="shadow-wrap">
-  <table>
-    <tr>
-      <th>Pseudo</th>
-      <th>Score</th>
-      <th>Classement </th>
-    </tr>
-    {% for joueur in allPlayer %}
-      <tr>
-        <td>{{ joueur }}</td>
-        <td>{{ joueur.score }}</td>
-        <td>{{ forloop.counter }}</td>
-
-      </tr>
-    {% endfor %}
-  </table>
+<div class="container-fluid">
+    <div class="leaderboard">
+        <h1>
+          <svg class="ico-cup">
+            <use xlink:href="#cup"></use>
+          </svg>
+          Most active Players
+        </h1>
+        <ul>
+            {% for joueur in allPlayer %}
+          <li>
+            <mark>{{ joueur }}</mark>
+            <small>{{ joueur.score }}</small>
+          </li>
+          {% endfor %}
+        </ul>
+      </div>
 </div>
 {% endblock content %}
