@@ -1,7 +1,21 @@
 {% extends "base.html" %}
 {% block style %}
-    {# <link rel="stylesheet" href="{% static "css/classement.css" %}"> #}
+<style>
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+    font-size: 1.2em;
+    text-align: left;
+}
+th, td {
+    padding: 20px;
+    border-bottom: 1px solid #aa1313;
+    text-align: center;
+}
+</style>
 {% endblock style %}
+
 {% block title %}
  Classement
 {% endblock title %}
@@ -11,11 +25,14 @@
     <tr>
       <th>Pseudo</th>
       <th>Score</th>
+      <th>Classement </th>
     </tr>
     {% for joueur in allPlayer %}
       <tr>
         <td>{{ joueur }}</td>
         <td>{{ joueur.score }}</td>
+        <td>{{ forloop.counter }}</td>
+
       </tr>
     {% endfor %}
   </table>

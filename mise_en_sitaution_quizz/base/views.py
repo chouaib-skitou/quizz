@@ -29,6 +29,8 @@ def authView(request):
 
 #Create and display players
 def PlayerView(request):
+  # p1 = Player(pseudo= "TRUCMACHIN",score =4 )
+  # p1.save()
   allPlayer = Player.objects.order_by("score").reverse()
 
   return render(request, "classement/classement.html", {"allPlayer" : allPlayer })
