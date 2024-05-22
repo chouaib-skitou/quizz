@@ -23,14 +23,18 @@
 {% endblock title %}
 {% block content %}
 <div class="shadow-wrap">
-    {% if allPlayer %}
-        <ul>
+    <table>
+        <tr>
+        <th>Pseudo</th>
+        <th>Score</th>
+        </tr>
         {% for joueur in allPlayer %}
-            <li> {{ joueur.score }}</li>
+            <tr>
+            <td>{{ joueur }}</td>
+            <td>{{ joueur.score }}</td>
+            </tr>
         {% endfor %}
-        </ul>
-    {% else %}
-        <p>Aucun joueur !!!</p>
-    {% endif %}
+
+    </table>
 </div>
 {% endblock content %}a

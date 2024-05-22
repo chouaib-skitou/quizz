@@ -28,7 +28,7 @@ def authView(request):
  return render(request, "registration/signup.html", {"form": form})
 
 def PlayerView(request):
-  allPlayer = Player.objects.order_by("score")
+  allPlayer = Player.objects.order_by("score").reverse()
 
   return render(request, "classement/classement.html", {"allPlayer" : allPlayer })
 
