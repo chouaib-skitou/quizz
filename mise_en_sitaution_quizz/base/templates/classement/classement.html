@@ -1,40 +1,23 @@
 {% extends "base.html" %}
 {% block style %}
-<style>
-
-  *{
-    padding: 0;
-    margin: 0;
-    box-sizing: border-box;
-    font-family: 'Mulish', sans-serif;
-    transition: 0.3s all ease-in-out;
-   }
-   body{
-   display: flex;
-   justify-content: center;
-   align-items: center;
-   height: 100vh;
-   background-color: #fff;
-   }
-</style>
+    {# <link rel="stylesheet" href="{% static "css/classement.css" %}"> #}
 {% endblock style %}
 {% block title %}
- Login
+ Classement
 {% endblock title %}
 {% block content %}
 <div class="shadow-wrap">
-    <table>
-        <tr>
-        <th>Pseudo</th>
-        <th>Score</th>
-        </tr>
-        {% for joueur in allPlayer %}
-            <tr>
-            <td>{{ joueur }}</td>
-            <td>{{ joueur.score }}</td>
-            </tr>
-        {% endfor %}
-
-    </table>
+  <table>
+    <tr>
+      <th>Pseudo</th>
+      <th>Score</th>
+    </tr>
+    {% for joueur in allPlayer %}
+      <tr>
+        <td>{{ joueur }}</td>
+        <td>{{ joueur.score }}</td>
+      </tr>
+    {% endfor %}
+  </table>
 </div>
-{% endblock content %}a
+{% endblock content %}
