@@ -8,7 +8,7 @@ from .forms import ControllerForm
 from .models import Controller
 
 from django.http import JsonResponse
-from .models import Device
+from .models import Device, Player
 from django.contrib import messages
 
 @login_required
@@ -26,3 +26,12 @@ def authView(request):
  else:
   form = UserCreationForm()
  return render(request, "registration/signup.html", {"form": form})
+
+def PlayerView(request):
+  p1 = Player(pseudo = "Amélie",score = 14)
+  p2 = Player('George',78)
+  p3 = Player("Matthieu",9)
+
+  return render(request, "classement/classement.html", {"p1": p1,"p2": p2,"p3": p3 })
+
+
