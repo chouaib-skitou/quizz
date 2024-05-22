@@ -31,11 +31,6 @@ def authView(request):
 def PlayerView(request):
   allPlayer = Player.objects.order_by("score").reverse()
 
-<<<<<<< HEAD
-  return render(request, "classement/classement.html", {"p1": p1,"p2": p2,"p3": p3 })
-  #method to send object to a file
-=======
   return render(request, "classement/classement.html", {"allPlayer" : allPlayer })
 
->>>>>>> 538cda73c198ac3b0f9a83e0590c6880707fe806
 
