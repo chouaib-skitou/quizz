@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz Creator</title>
+    <link rel="stylesheet" href="create_quiz.css">
+    <script src="create_quiz.js"></script> 
+</head>
+<body>
+    <div class="container">
+        <h1>Create a New Quiz</h1>
+        <div id="quizForm">
+            <input type="text" id="quizTitle" placeholder="Enter quiz title" required>
+            <button onclick="createQuiz()">Create Quiz</button>
+        </div>
+        <div id="questionSection" style="display:none;">
+            <h2 id="quizTitleDisplay"></h2>
+            <input type="text" id="questionText" placeholder="Enter question" required>
+            <div id="answers">
+                <input type="text" class="answer" placeholder="Enter answer option" required>
+                <button onclick="addAnswer()">Add Another Answer</button>
+            </div>
+            <button onclick="addQuestion()">Add Question</button>
+        </div>
+        <div id="quizDisplay" style="display:none;">
+            <h2>Quiz Overview</h2>
+            <div id="questionsList"></div>
+        </div>
+    </div>
+</body>
+</html>
