@@ -26,3 +26,10 @@ def authView(request):
  else:
   form = UserCreationForm()
  return render(request, "registration/signup.html", {"form": form})
+
+@login_required
+def gameView(request):
+ 
+ return render(request, "question_answer/main.html", {"multiple_answers":False})
+ 
+ #"qt","","q":"test question", "a1":"answer1","a1":"answer3","a1":"answer2"
