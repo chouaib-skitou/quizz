@@ -21,3 +21,6 @@ def authView(request):
  else:
   form = UserCreationForm()
  return render(request, "registration/signup.html", {"form": form})
+
+def create_quiz(request):
+ return render(request, "create_new_quiz/create_quiz.html")
