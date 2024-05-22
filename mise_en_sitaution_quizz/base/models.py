@@ -21,6 +21,7 @@ class Controller(models.Model):
     def __str__(self):
         return self.name
 
+#Player class
 class Player(models.Model):
     pseudo = models.CharField(max_length=100)
     score = models.IntegerField(default=0)
