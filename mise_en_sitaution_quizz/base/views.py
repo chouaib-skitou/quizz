@@ -28,10 +28,8 @@ def authView(request):
  return render(request, "registration/signup.html", {"form": form})
 
 def PlayerView(request):
-  p1 = Player(pseudo = "Amélie",score = 14)
-  p2 = Player('George',78)
-  p3 = Player("Matthieu",9)
+  allPlayer = Player.objects.order_by("score")
 
-  return render(request, "classement/classement.html", {"p1": p1,"p2": p2,"p3": p3 })
+  return render(request, "classement/classement.html", {"allPlayer" : allPlayer })
 
 
