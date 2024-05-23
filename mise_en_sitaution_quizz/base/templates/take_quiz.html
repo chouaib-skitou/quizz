@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Take Quiz</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+<div class="container mt-5">
+    <h1 id="quizTitle"></h1>
+    <p id="quizDescription"></p>
+    <form id="quizForm">
+        <div id="questionsContainer"></div>
+        <button type="submit" class="btn btn-primary">Submit Quiz</button>
+    </form>
+</div>
+
+<script>
+    var quizId = {{quiz_id}}; // Make sure this is rendered correctly by your Django template
+
+    $(document).ready(function() {
+        fetchQuizDetails();
+
+        $('#quizForm').on('submit', function(event) {
+            event.preventDefault();
+            submitAnswers();
+        });
+    });
+
+    function fetchQuizDetails() {
+        $.getJSON(`/get_quiz_details/${quizId}/`, function(data) {
+            $('#quizTitle').text(data.title);
+            $('#quizDescription').text(data.description);
+            let questionsHtml = '';
+            data.questions.forEach(function(question) {
+                questionsHtml += '<div class="mb-4"><strong>' + question.text + '</strong>';
+                question.choices.forEach(function(choice) {
+                    questionsHtml += `<div class="form-check">
+                        <input class="form-check-input" type="checkbox" name="question_${question.id}[]" value="${choice.id}" id="choice_${choice.id}">
+                        <label class="form-check-label" for="choice_${choice.id}">
+                            ${choice.text}
+                        </label>
+                    </div>`;
+                });
+                questionsHtml += '</div>';
+            });
+            $('#questionsContainer').html(questionsHtml);
+        });
+    }
+
+    function submitAnswers() {
+        let formData = $('#quizForm').serialize();
+        $.ajax({
+            type: "POST",
+            url: `/submit_quiz/${quizId}/`,
+            data: formData,
+            success: function(response) {
+                alert('Your score: ' + response.score);
+            },
+            error: function() {
+                alert('Error submitting quiz.');
+            }
+        });
+    }
+</script>
+</body>
+</html>

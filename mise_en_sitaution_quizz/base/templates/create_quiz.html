@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Create Quiz</title>
+    <title>Create New Quiz</title>
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <!-- Font Awesome CSS -->
@@ -16,7 +16,6 @@
         .remove-icon {
             color: red;
         }
-
         .question_container {
             margin: 10px;
             padding: 10px;
@@ -38,155 +37,205 @@
 <body>
     <div class="container mt-5">
         <h1>Create New Quiz</h1>
-        <form method="post">
-            {% csrf_token %}
+        <form method="post" id="quizForm">
             <div class="form-group">
-                {{ quiz_form.as_p }}
+                <p>
+                    <input type="text" name="title" maxlength="200"
+                           class="form-control" placeholder="Enter the quiz title" required
+                           id="id_title">
+                </p>
+                <p>
+                    <textarea name="description" cols="40" rows="2"
+                              class="form-control" placeholder="Enter a description for the quiz"
+                              id="id_description"></textarea>
+                </p>
             </div>
             <div class="row">
                 <div class="col-6">
-                    <h2 class="text-left">
-                        Questions
-                    </h2>
+                    <h2 class="text-left">Questions</h2>
                 </div>
                 <div class="col-6 text-right">
-                    <button type="button" id="add-question" class="btn btn-success add-icon">Add question</button>
+                    <button type="button" id="add-question" onclick="addQuestion()" class="btn btn-success add-icon" >Add question</button>
                 </div>
             </div>
             <div id="questions">
-                {{ question_formset.management_form }}
-                {% for question_form in question_formset %}
-                    <div class="question-form mb-3 question_container">
-                        <div class="form-group">
-                            <div class="row">
-                                <div class="col-8">
-                                    {{ question_form.as_p }}
-                                </div>
-                                <div class="col-4">
-                                    <button type="button" class="btn btn-danger remove-icon remove-question">Remove question</button>
-                                </div>
-                            </div>
-                        </div>
+                <div class="question-form mb-3 question_container" id="question-0">
+                    <div class="form-group">
                         <div class="row">
-                            <div class="col-6">
-                                <h3 class="text-left">
-                                    Choices
-                                </h3>
+                            <div class="col-8">
+                                <p>
+                                    <input type="text" name="questions[0][text]" maxlength="500" class="form-control" placeholder="Enter the question text">
+                                </p>
                             </div>
-                            <div class="col-6 text-right">
-                                <button type="button" class="btn btn-success add-icon add-choice">Add choice</button>
+                            <div class="col-4">
+                                <button type="button" class="btn btn-danger remove-icon remove-question" onclick="removeQuestion(0)">Remove question</button>
                             </div>
-                        </div>
-                        <div class="choices">
-                            {{ choice_formset.management_form }}
-                            {% for choice_form in choice_formset %}
-                                <div class="choice-form choices_container mb-2">
-                                    <div class="form-group">
-                                        <div class="row">
-                                            <div class="col-8 d-flex">
-                                                {{ choice_form.as_p }}
-                                            </div>
-                                            <div class="col-4">
-                                                <button type="button" class="btn btn-danger remove-icon remove-choice">Remove choice</button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            {% endfor %}
                         </div>
                     </div>
-                {% endfor %}
+                    <div class="row">
+                        <div class="col-6">
+                            <h3 class="text-left">Choices</h3>
+                        </div>
+                        <div class="col-6 text-right">
+                            <button type="button" class="btn btn-success add-icon add-choice" onclick="addChoice(0)">Add choice</button>
+                        </div>
+                    </div>
+                    <div class="choices" id="choices-0">
+                        <div class="choice-form choices_container mb-2" id="choice-0-0">
+                            <div class="form-group">
+                                <div class="row">
+                                    <div class="col-8">
+                                        <p>
+                                            <input type="text" name="questions[0][choices][0][text]" maxlength="200" class="form-control" placeholder="Enter the choice text">
+                                        </p>
+                                        <p>
+                                            <label for="id_questions_0_choices_0_is_correct">Correct answer:</label>
+                                            <input type="checkbox" name="questions[0][choices][0][is_correct]" class="form-check-input" id="id_questions_0_choices_0_is_correct">
+                                        </p>
+                                    </div>
+                                    <div class="col-4">
+                                        <button type="button" class="btn btn-danger remove-icon remove-choice" onclick="removeChoice(0, 0)">Remove choice</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="choice-form choices_container mb-2" id="choice-0-1">
+                            <div class="form-group">
+                                <div class="row">
+                                    <div class="col-8">
+                                        <p>
+                                            <input type="text" name="questions[0][choices][1][text]" maxlength="200" class="form-control" placeholder="Enter the choice text">
+                                        </p>
+                                        <p>
+                                            <label for="id_questions_0_choices_1_is_correct">Correct answer:</label>
+                                            <input type="checkbox" name="questions[0][choices][1][is_correct]" class="form-check-input" id="id_questions_0_choices_1_is_correct">
+                                        </p>
+                                    </div>
+                                    <div class="col-4">
+                                        <button type="button" class="btn btn-danger remove-icon remove-choice" onclick="removeChoice(0, 1)">Remove choice</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
             <button type="submit" class="btn btn-primary">Create Quiz</button>
         </form>
     </div>
 
     <script>
-        $(document).ready(function () {
-            function updateElementIndex(el, prefix, ndx) {
-                var id_regex = new RegExp('(' + prefix + '-\\d+)', 'g');
-                var replacement = prefix + '-' + ndx;
-                $(el).find(':input, label').each(function () {
-                    var $this = $(this);
-                    if ($this.attr("for")) {
-                        console.log('Updating for attribute from', $this.attr("for"), 'to', $this.attr("for").replace(id_regex, replacement));
-                        $this.attr("for", $this.attr("for").replace(id_regex, replacement));
-                    }
-                    if (this.id) {
-                        console.log('Updating id attribute from', this.id, 'to', this.id.replace(id_regex, replacement));
-                        this.id = this.id.replace(id_regex, replacement);
-                    }
-                    if (this.name) {
-                        console.log('Updating name attribute from', this.name, 'to', this.name.replace(id_regex, replacement));
-                        this.name = this.name.replace(id_regex, replacement);
-                    }
-                });
-            }
+        let questionIndex = 1;  // Starts from 1 because initial question is already present
 
-            function cloneMore(selector, prefix) {
-                var newElement = $(selector).clone(true);
-                var total = $('#id_' + prefix + '-TOTAL_FORMS').val();
-                newElement.find(':input').each(function () {
-                    if ($(this).attr('name')) {
-                        var name = $(this).attr('name').replace('-' + (total - 1) + '-', '-' + total + '-');
-                        var id = 'id_' + name;
-                        console.log('Cloning input element, updating name to', name, 'and id to', id);
-                        $(this).attr({ 'name': name, 'id': id }).val('').removeAttr('checked');
-                    }
-                });
-                newElement.find('label').each(function () {
-                    var forValue = $(this).attr('for');
-                    if (forValue) {
-                        forValue = forValue.replace('-' + (total - 1) + '-', '-' + total + '-');
-                        console.log('Cloning label element, updating for to', forValue);
-                        $(this).attr({ 'for': forValue });
-                    }
-                });
-                total++;
-                $('#id_' + prefix + '-TOTAL_FORMS').val(total);
-                $(selector).after(newElement);
-            }
+        function addQuestion() {
+            let qIndex = questionIndex++;
+            let questionHTML = `<div class="question-form mb-3 question_container" id="question-${qIndex}">
+                <div class="form-group">
+                    <div class="row">
+                        <div class="col-8">
+                            <p>
+                                <input type="text" name="questions[${qIndex}][text]" maxlength="500" class="form-control" placeholder="Enter the question text">
+                            </p>
+                        </div>
+                        <div class="col-4">
+                            <button type="button" class="btn btn-danger remove-icon remove-question" onclick="removeQuestion(${qIndex})">Remove question</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-6">
+                        <h3 class="text-left">Choices</h3>
+                    </div>
+                    <div class="col-6 text-right">
+                        <button type="button" class="btn btn-success add-icon add-choice" onclick="addChoice(${qIndex})">Add choice</button>
+                    </div>
+                </div>
+                <div class="choices" id="choices-${qIndex}">
+                    <!-- Choices will be added here -->
+                </div>
+            </div>`;
+            $('#questions').append(questionHTML);
+            for (let i = 0; i < 2; i++) addChoice(qIndex);  // Adding initial two choices
+        }
 
-            function updateIndexes() {
-                $('.question-form').each(function (index) {
-                    console.log('Updating question index to', index);
-                    updateElementIndex(this, 'questions', index);
-                    $(this).find('.choice-form').each(function (sub_index) {
-                        console.log('Updating choice index to', sub_index);
-                        updateElementIndex(this, 'choices', sub_index);
+        function addChoice(questionId) {
+            let choicesContainer = $(`#choices-${questionId}`);
+            let choiceCount = choicesContainer.children().length;
+            if (choiceCount < 6) {  // Limit to 6 choices per question
+                let choiceHTML = `<div class="choice-form choices_container mb-2" id="choice-${questionId}-${choiceCount}">
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-8">
+                                <p>
+                                    <input type="text" name="questions[${questionId}][choices][${choiceCount}][text]" maxlength="200" class="form-control" placeholder="Enter the choice text">
+                                </p>
+                                <p>
+                                    <label for="id_questions_${questionId}_choices_${choiceCount}_is_correct">Correct answer:</label>
+                                    <input type="checkbox" name="questions[${questionId}][choices][${choiceCount}][is_correct]" class="form-check-input" id="id_questions_${questionId}_choices_${choiceCount}_is_correct">
+                                </p>
+                            </div>
+                            <div class="col-4">
+                                <button type="button" class="btn btn-danger remove-icon remove-choice" onclick="removeChoice(${questionId}, ${choiceCount})">Remove choice</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>`;
+                choicesContainer.append(choiceHTML);
+            }
+        }
+
+        function removeQuestion(questionId) {
+            $(`#question-${questionId}`).remove();
+        }
+
+        function removeChoice(questionId, choiceId) {
+            let choicesContainer = $(`#choices-${questionId}`);
+            if (choicesContainer.children().length > 2) {  // Ensure minimum two choices are present
+                $(`#choice-${questionId}-${choiceId}`).remove();
+            }
+        }
+
+        $('#quizForm').submit(function (event) {
+            event.preventDefault();  // Prevent the default form submission
+            let quizData = {
+                title: $('#id_title').val(),
+                description: $('#id_description').val(),
+                questions: []
+            };
+    
+            $('.question-form').each(function () {
+                let question = {
+                    text: $(this).find('input[type="text"][name*="[text]"]').val(),
+                    choices: []
+                };
+    
+                $(this).find('.choice-form').each(function () {
+                    question.choices.push({
+                        text: $(this).find('input[type="text"][name*="[text]"]').val(),
+                        is_correct: $(this).find('input[type="checkbox"]').is(':checked')
                     });
                 });
-            }
-
-            $('#add-question').click(function () {
-                console.log('Adding new question');
-                cloneMore('.question-form:last', 'questions');
-                updateIndexes();
+                quizData.questions.push(question);
             });
-
-            $(document).on('click', '.add-choice', function () {
-                var questionForm = $(this).closest('.question-form');
-                console.log('Adding new choice');
-                cloneMore(questionForm.find('.choice-form:last'), 'choices');
-                updateIndexes();
-            });
-
-            $(document).on('click', '.remove-question', function () {
-                if ($('.question-form').length > 1) {
-                    console.log('Removing question');
-                    $(this).closest('.question-form').remove();
-                    updateIndexes();
-                }
-            });
-
-            $(document).on('click', '.remove-choice', function () {
-                if ($(this).closest('.choices').find('.choice-form').length > 1) {
-                    console.log('Removing choice');
-                    $(this).closest('.choice-form').remove();
-                    updateIndexes();
+    
+            $.ajax({
+                type: "POST",
+                url: '/save_quiz/',  // Adjust this to your Django URL
+                data: JSON.stringify(quizData),
+                contentType: "application/json",
+                dataType: 'json',
+                success: function (response) {
+                    console.log(response);
+                    alert('Quiz Created Successfully!');
+                },
+                error: function (error) {
+                    console.error('Error:', error);
+                    alert('An error occurred');
                 }
             });
         });
+        
+        
     </script>
 </body>
 </html>
