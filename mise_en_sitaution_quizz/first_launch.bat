@@ -4,10 +4,10 @@
 pip install -r requirements.txt
 
 # Make migrations
-python manage.py makemigrations
+C:\Users\lokes\AppData\Local\Programs\Python\Python311\python manage.py makemigrations
 
 # Apply the migrations
-python manage.py migrate
+C:\Users\lokes\AppData\Local\Programs\Python\Python311\python manage.py migrate
 
 # Run the server
-python manage.py runserver
+C:\Users\lokes\AppData\Local\Programs\Python\Python311\python manage.py runserver
