@@ -203,7 +203,7 @@ def delete_quiz(request, pk):
         return redirect('base:quiz_list')
     else:
         # Retourner une page qui demande confirmation
-        return render(request, 'delete_confirmation.html', {'quiz': quiz})
+        return render(request, 'quiz/delete_confirmation.html', {'quiz': quiz})
 
 @login_required
 def update_quiz(request, pk):
