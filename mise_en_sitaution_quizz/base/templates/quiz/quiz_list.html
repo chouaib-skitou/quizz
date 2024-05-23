@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Quiz List</title>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+    {% include "components/nav.html" %}
+    <div class="container mt-5">
+        <h1>Quizzes</h1>
+        <a href="{% url 'base:create_quiz' %}" class="btn btn-primary mb-3">Create New Quiz</a>
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>Title</th>
+                    <th>Description</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for quiz in quizzes %}
+                    <tr>
+                        <td>{{ quiz.title }}</td>
+                        <td>{{ quiz.description }}</td>
+                        <td>
+                            <a href="{% url 'base:take_quiz' quiz.pk %}" class="btn btn-success">Take Quiz</a>
+                            <a href="{% url 'base:quiz_detail' quiz.pk %}" class="btn btn-info">View</a>
+                            <a href="{% url 'base:update_quiz' quiz.pk %}" class="btn btn-warning">Update</a>
+                            <a href="{% url 'base:delete_quiz' quiz.pk %}" class="btn btn-danger">Delete</a>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>
