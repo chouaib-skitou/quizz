@@ -2,12 +2,9 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.decorators import login_required
 from django.forms import modelformset_factory
-<<<<<<< HEAD
 from .forms import QuizForm, QuestionForm, ChoiceForm
 from .models import Quiz, Question, Choice, Player
-=======
 from .models import Quiz, QuizAttempt, Question, UserAnswer, Choice
->>>>>>> f0d53e666f429e06a7a27e1878bd40feb9af0c73
 from django.views.generic import DetailView
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
@@ -201,8 +198,12 @@ def QuizList(request):
 @login_required
 def delete_quiz(request, pk):
     quiz = get_object_or_404(Quiz, pk=pk)
-    quiz.delete()
-    return redirect('base:quiz_list')
+    if request.method == 'POST':
+        quiz.delete()
+        return redirect('base:quiz_list')
+    else:
+        # Retourner une page qui demande confirmation
+        return render(request, 'delete_confirmation.html', {'quiz': quiz})
 
 @login_required
 def update_quiz(request, pk):

@@ -7,33 +7,14 @@
     <!-- Font Awesome CSS -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <style>
-        .add-icon, .remove-icon {
-            cursor: pointer;
-            color: blue;
-            margin-left: 10px;
-        }
-        .remove-icon {
-            color: red;
-        }
-        .question_container {
-            margin: 10px;
-            padding: 10px;
-            border-radius: 10px;
-            background-color: rgb(194, 248, 255);
-        }
-        .choices_container {
-            margin: 10px;
-            padding: 10px;
-            border-radius: 10px;
-            background-color: rgb(255, 194, 194);
-        }
-        .btn-success,
-        .btn-danger {
-            color: white;
-        }
-    </style>
+
 </head>
+{% load static %}
+{% block style %}
+
+<link rel="stylesheet" href="{% static "css/create_quiz.css" %}">
+
+{% endblock style %}
 <body>
     <div class="container mt-5">
         <h1>Create New Quiz</h1>
@@ -120,8 +101,13 @@
                     </div>
                 </div>
             </div>
-            <button type="submit" class="btn btn-primary">Create Quiz</button>
+            <button type="submit" class="btn btn-primary" >Create Quiz</button>
         </form>
+        <!-- Placeholder pour le message flash -->
+        <div id="flashMessage" style="display:none; position: fixed; top: 20px; left: 50%; transform: translateX(-50%); z-index: 1000; background-color: #f8d7da; color: #721c24; padding: 10px; border-radius: 5px; border: 1px solid #f5c6cb;">
+            <!-- Le message sera injecté ici -->
+        </div>
+
     </div>
 
     <script>
@@ -170,7 +156,7 @@
                                     <input type="text" name="questions[${questionId}][choices][${choiceCount}][text]" maxlength="200" class="form-control" placeholder="Enter the choice text">
                                 </p>
                                 <p>
-                                    <label for="id_questions_${questionId}_choices_${choiceCount}_is_correct">Correct answer:</label>
+                                    <label for="id_questions_${questionId}_choices_${choiceCount}_is_correct">Correct:</label>
                                     <input type="checkbox" name="questions[${questionId}][choices][${choiceCount}][is_correct]" class="form-check-input" id="id_questions_${questionId}_choices_${choiceCount}_is_correct">
                                 </p>
                             </div>
@@ -220,13 +206,19 @@
     
             $.ajax({
                 type: "POST",
-                url: '/save_quiz/',  // Adjust this to your Django URL
+                url: '/save_quiz/',  // Ajustez cela à votre URL Django
                 data: JSON.stringify(quizData),
                 contentType: "application/json",
                 dataType: 'json',
                 success: function (response) {
                     console.log(response);
-                    alert('Quiz Created Successfully!');
+                    // Affiche le message flash
+                    $('#flashMessage').text('Quiz saved successfully! Redirecting...').show();
+                    
+                    // Redirection après 5 secondes
+                    setTimeout(function() {
+                        window.location.href = "{% url 'base:quiz_list' %}";  // Ajustez selon votre URL
+                    }, 1000);  // 5000 ms = 5 secondes
                 },
                 error: function (error) {
                     console.error('Error:', error);

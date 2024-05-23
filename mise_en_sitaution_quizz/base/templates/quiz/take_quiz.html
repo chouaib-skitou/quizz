@@ -3,7 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <title>Take Quiz</title>
+    {% load static %}
+    {% block style %}
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="{% static "css/quiz_list.css" %}">
+    {% endblock style %}
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 <body>

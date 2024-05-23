@@ -1,9 +1,11 @@
+/* Applique box-sizing: border-box à tous les éléments pour inclure padding et border dans la largeur et hauteur totales de l'élément. */
 *,
 *::before,
 *::after {
   box-sizing: border-box;
 }
 
+/* Stylise le corps du document avec une hauteur minimale, une hauteur de 100% de la fenêtre d'affichage, sans marges et avec un dégradé radial comme arrière-plan. */
 body {
   min-height: 450px;
   height: 100vh;
@@ -13,6 +15,7 @@ body {
   font-family: 'Open Sans', sans-serif;  
 }
 
+/* Stylise le tableau de classement avec une position absolue, centré dans la vue, avec un dégradé linéaire comme arrière-plan. */
 .leaderboard {
   position: absolute;
   top: 50%;
@@ -24,16 +27,20 @@ body {
   border-radius: 10px;
   box-shadow: 0 7px 30px rgba(62, 9, 11, .3);
 }
+
+/* Centrage du texte pour tous les éléments h1. */
 h1 {
-    text-align: center;
+  text-align: center;
 }
 
+/* Stylise le titre dans le tableau de classement avec une taille de police, couleur et padding spécifiques. */
 .leaderboard h1 {
   font-size: 18px;
   color: #e1e1e1;
   padding: 12px 13px 18px;
 }
 
+/* Stylise le SVG utilisé dans le h1 du tableau de classement. */
 .leaderboard h1 svg {
   width: 25px;
   height: 26px;
@@ -43,13 +50,15 @@ h1 {
   vertical-align: baseline;
 }
 
+/* Supprime les puces et les marges/paddings par défaut pour la liste dans le tableau de classement. */
 .leaderboard ul {
   counter-reset: leaderboard;
-  list-style: none; /* Removes the bullets from the list */
-  padding: 0; /* Resets any default padding */
-  margin: 0; /* Resets any default margin */
+  list-style: none; 
+  padding: 0; 
+  margin: 0;
 }
 
+/* Stylise chaque élément de la liste avec une taille de police spécifique et un arrière-plan par défaut. */
 .leaderboard ul li {
   position: relative;
   z-index: 1;
@@ -59,9 +68,10 @@ h1 {
   cursor: pointer;
   backface-visibility: hidden;
   transform: translateZ(0) scale(1.0, 1.0);
-  background: #808080; /* Default background color for all items */
+  background: #808080;
 }
 
+/* Ajoute un compteur visuel avant chaque élément de la liste dans le tableau de classement. */
 .leaderboard ul li::before {
   content: counter(leaderboard);
   position: absolute;
@@ -77,6 +87,7 @@ h1 {
   text-align: center;
 }
 
+/* Stylise le marqueur pour chaque joueur dans la liste. */
 .leaderboard ul li mark {
   position: absolute;
   z-index: 2;
@@ -90,6 +101,7 @@ h1 {
   color: #fff;
 }
 
+/* Ajoute des flèches décoratives aux marqueurs avec des transitions pour l'animation. */
 .leaderboard ul li mark::before,
 .leaderboard ul li mark::after {
   content: '';
@@ -110,6 +122,7 @@ h1 {
   border-right: 10px solid transparent;
 }
 
+/* Stylise les éléments pour afficher le score de chaque joueur. */
 .leaderboard ul li small {
   position: relative;
   z-index: 2;
@@ -117,6 +130,7 @@ h1 {
   text-align: right;
 }
 
+/* Ajoute un effet visuel supplémentaire pour chaque élément de la liste lors du survol. */
 .leaderboard ul li::after {
   content: '';
   position: absolute;
@@ -132,7 +146,7 @@ h1 {
   opacity: 0;
 }
 
-/* Specific colors for the first three items */
+/* Couleurs spécifiques pour les trois premiers éléments de la liste pour les distinguer. */
 .leaderboard ul li:nth-child(1) {
   background: #fa6855;
 }
@@ -171,6 +185,7 @@ h1 {
   bottom: -3px;
 }
 
+/* Effet de survol pour augmenter la visibilité et l'attrait visuel de l'élément survolé. */
 .leaderboard ul li:hover {
   z-index: 2;
   overflow: visible;

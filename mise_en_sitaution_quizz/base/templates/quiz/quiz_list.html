@@ -3,7 +3,11 @@
 <head>
     <title>Quiz List</title>
     <!-- Bootstrap CSS -->
+    {% load static %}
+    {% block style %}
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="{% static "css/quiz_list.css" %}">
+    {% endblock style %}
 </head>
 <body>
     {% include "components/nav.html" %}
@@ -27,6 +31,7 @@
                             <a href="{% url 'base:take_quiz' quiz.pk %}" class="btn btn-success">Take Quiz</a>
                             <a href="{% url 'base:quiz_detail' quiz.pk %}" class="btn btn-info">View</a>
                             <a href="{% url 'base:update_quiz' quiz.pk %}" class="btn btn-warning">Update</a>
+                            
                             <a href="{% url 'base:delete_quiz' quiz.pk %}" class="btn btn-danger">Delete</a>
                         </td>
                     </tr>
