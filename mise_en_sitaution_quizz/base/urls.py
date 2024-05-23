@@ -1,4 +1,5 @@
 from django.urls import path, include
+from django.contrib.auth import views as auth_views
 from .views import home, authView, create_quiz, QuizDetailView, QuizList, delete_quiz, update_quiz, save_quiz, get_quiz_json, update_quiz_form, get_quiz_details, submit_quiz, take_quiz, PlayerView
 
 app_name = 'base'  # Add this line to define the namespace for your app
@@ -20,6 +21,7 @@ urlpatterns = [
     path('submit_quiz/<int:quiz_id>/', submit_quiz, name='submit-quiz'),
     path('take_quiz/<int:quiz_id>/', take_quiz, name='take_quiz'),
     path("classement/", PlayerView, name="classement"), 
+    path('logout/', auth_views.LogoutView.as_view(), name='logout'),
     #Nouvelle page de test. Accès au dossier dans classement,
     #PlayerView : 
 ]
