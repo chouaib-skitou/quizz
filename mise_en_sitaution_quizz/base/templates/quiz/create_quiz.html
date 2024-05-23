@@ -16,16 +16,13 @@
 
 {% endblock style %}
 <body>
+    {% include "components/nav.html" %}
     <div class="container mt-5">
         <h1>Create New Quiz</h1>
         <form method="post" id="quizForm">
             <div class="form-group">
-                <input type="text" name="title" maxlength="200"
-                       class="form-control" placeholder="Enter the quiz title" required
-                       id="id_title">
-                <textarea name="description" cols="40" rows="2"
-                          class="form-control" placeholder="Enter a description for the quiz"
-                          id="id_description"></textarea>
+                <p><input type="text" name="title" maxlength="200" class="form-control" placeholder="Enter the quiz title" required id="id_title"></p>
+                <p><textarea name="description" cols="40" rows="2" class="form-control" placeholder="Enter a description for the quiz" id="id_description"></textarea></p>
             </div>
             <div class="row">
                 <div class="col-6">

@@ -17,7 +17,7 @@ body {
     margin: 10px;
     padding: 10px;
     border-radius: 10px;
-    background: radial-gradient(ellipse farthest-corner at center top, #f2606f 0%, #d20b1f 100%);
+    background: radial-gradient(ellipse farthest-corner at center top, #60f2dc 0%, #0db8d2 100%);
     }
 .btn-success, .btn-danger {
      color: white; 
