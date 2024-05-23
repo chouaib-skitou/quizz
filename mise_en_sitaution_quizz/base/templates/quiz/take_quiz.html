@@ -5,12 +5,17 @@
     <title>Take Quiz</title>
     {% load static %}
     {% block style %}
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <!-- Font Awesome CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="{% static "css/quiz_list.css" %}">
     {% endblock style %}
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 <body>
+    {% include "components/nav.html" %}
 <div class="container mt-5">
     <h1 id="quizTitle"></h1>
     <p id="quizDescription"></p>
