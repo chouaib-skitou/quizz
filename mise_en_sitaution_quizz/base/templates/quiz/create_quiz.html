@@ -156,8 +156,12 @@
                                     <input type="text" name="questions[${questionId}][choices][${choiceCount}][text]" maxlength="200" class="form-control" placeholder="Enter the choice text">
                                 </p>
                                 <p>
-                                    <label for="id_questions_${questionId}_choices_${choiceCount}_is_correct">Correct:</label>
-                                    <input type="checkbox" name="questions[${questionId}][choices][${choiceCount}][is_correct]" class="form-check-input" id="id_questions_${questionId}_choices_${choiceCount}_is_correct">
+                                    <div class="input-group-append">
+                                        <div class="input-group-text">        
+                                        <input type="checkbox" name="questions[${questionId}][choices][${choiceCount}][is_correct]" class="form-check-input" id="id_questions_${questionId}_choices_${choiceCount}_is_correct">
+                                        <label for="id_questions_${questionId}_choices_${choiceCount}_is_correct">Correct:</label>
+                                        </div>
+                                    </div>
                                 </p>
                             </div>
                             <div class="col-4">

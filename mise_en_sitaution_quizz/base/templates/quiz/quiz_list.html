@@ -32,7 +32,7 @@
                             <a href="{% url 'base:quiz_detail' quiz.pk %}" class="btn btn-info">View</a>
                             <a href="{% url 'base:update_quiz' quiz.pk %}" class="btn btn-warning">Update</a>
                             
-                            <a href="{% url 'base:delete_quiz' quiz.pk %}" class="btn btn-danger">Delete</a>
+                            <a href="{% url 'base:delete_quiz' %}" class="btn btn-danger">Delete</a>
                         </td>
                     </tr>
                 {% endfor %}
