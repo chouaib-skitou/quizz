@@ -27,7 +27,7 @@ def authView(request):
 
 class QuizDetailView(DetailView):
     model = Quiz
-    template_name = 'quiz_detail.html'  # You can customize the template name
+    template_name = 'quiz/quiz_detail.html'  # You can customize the template name
 
 @login_required
 @csrf_exempt
@@ -171,17 +171,17 @@ def submit_quiz(request, quiz_id):
 @login_required
 def take_quiz(request, quiz_id):
     quiz = get_object_or_404(Quiz, pk=quiz_id)
-    return render(request, 'take_quiz.html', {'quiz_id': quiz_id})
+    return render(request, 'quiz/take_quiz.html', {'quiz_id': quiz_id})
 
 @login_required
 def create_quiz(request):
-   return render(request, 'create_quiz.html')
+   return render(request, 'quiz/create_quiz.html')
 
 
 @login_required
 def QuizList(request):
     quizzes = Quiz.objects.all()
-    return render(request, 'quiz_list.html', {'quizzes': quizzes})
+    return render(request, 'quiz/quiz_list.html', {'quizzes': quizzes})
 
 @login_required
 def delete_quiz(request, pk):
@@ -193,6 +193,6 @@ def delete_quiz(request, pk):
 def update_quiz(request, pk):
     quiz = get_object_or_404(Quiz, pk=pk)
 
-    return render(request, 'update_quiz.html', {
+    return render(request, 'quiz/update_quiz.html', {
         'quiz_id': pk,
     })
