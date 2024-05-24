@@ -12,6 +12,7 @@ from django.http import JsonResponse
 import json
 from django.db import transaction
 from django.contrib.auth.models import User
+from django.http import JsonResponse
 
 
 @login_required
@@ -220,6 +221,7 @@ def update_quiz(request, pk):
 def create_group(request):
     return render(request, 'group/new_group.html')
 
+
 @csrf_exempt
 def save_group_form(request):
     if request.method == 'POST':
@@ -236,7 +238,8 @@ def save_group_form(request):
         group.save()
 
         return JsonResponse({'id': group.id, 'name': group.name})
-
+    else:
+        return JsonResponse({'error': 'Invalid request method.'}, status=405)
 
 @csrf_exempt
 def get_quiz(request, quiz_id):
@@ -289,3 +292,10 @@ def submit_quiz(request):
         user_attempt.save()
 
         return JsonResponse({'score': user_attempt.score})
+    
+    
+@csrf_exempt
+def get_users(request):
+    if request.method == 'GET':
+        users = User.objects.all().values('username')
+        return JsonResponse(list(users), safe=False)
