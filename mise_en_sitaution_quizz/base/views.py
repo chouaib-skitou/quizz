@@ -2,6 +2,8 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.decorators import login_required
 from django.forms import modelformset_factory
+from .forms import QuizForm, QuestionForm, ChoiceForm
+from .models import Quiz, Question, Choice, Player
 from .models import Quiz, QuizAttempt, Question, UserAnswer, Choice
 from django.views.generic import DetailView
 from django.views.decorators.csrf import csrf_exempt
@@ -24,6 +26,16 @@ def authView(request):
  else:
   form = UserCreationForm()
  return render(request, "registration/signup.html", {"form": form})
+
+#Create and display players
+def PlayerView(request):
+  # p1 = Player(pseudo= "TRUCMACHIN",score =4 )
+  # p1.save()
+  allPlayer = Player.objects.order_by("score").reverse()
+
+  return render(request, "classement/classement.html", {"allPlayer" : allPlayer })
+
+
 
 class QuizDetailView(DetailView):
     model = Quiz
@@ -186,8 +198,12 @@ def QuizList(request):
 @login_required
 def delete_quiz(request, pk):
     quiz = get_object_or_404(Quiz, pk=pk)
-    quiz.delete()
-    return redirect('base:quiz_list')
+    if request.method == 'POST':
+        quiz.delete()
+        return redirect('base:quiz_list')
+    else:
+        # Retourner une page qui demande confirmation
+        return render(request, 'quiz/delete_confirmation.html', {'quiz': quiz})
 
 @login_required
 def update_quiz(request, pk):

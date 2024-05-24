@@ -2,21 +2,18 @@
 <html>
 <head>
     <title>Update Quiz</title>
+    {% load static %}
+    {% block style %}
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <!-- Font Awesome CSS -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <link rel="stylesheet" href="{% static "css/update_quiz.css" %}">
+    {% endblock style %}
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <style>
-        .add-icon, .remove-icon { cursor: pointer; color: blue; margin-left: 10px; }
-        .remove-icon { color: red; }
-        .question_container, .choices_container { margin: 10px; padding: 10px; border-radius: 10px; }
-        .question_container { background-color: rgb(194, 248, 255); }
-        .choices_container { background-color: rgb(255, 194, 194); }
-        .btn-success, .btn-danger { color: white; }
-    </style>
 </head>
 <body>
+    {% include "components/nav.html" %}
     <div class="container mt-5">
         <h1>Update Quiz</h1>
         <form id="quizForm">
@@ -70,9 +67,31 @@
             let choicesContainer = $(`#choices-${questionId}`);
             let choiceCount = choicesContainer.children().length;
             let checkedAttr = isCorrect ? ' checked' : '';
-            let choiceHTML = `<div class="choice-form choices_container mb-2"><div class="form-group"><div class="row"><div class="col-8"><p><input type="text" name="questions[${questionId}][choices][${choiceCount}][text]" value="${choiceText}" maxlength="200" class="form-control" placeholder="Enter the choice text"></p><p><label>Correct answer:</label><input type="checkbox" name="questions[${questionId}][choices][${choiceCount}][is_correct]" class="form-check-input"${checkedAttr}></p></div><div class="col-4"><button type="button" class="btn btn-danger remove-icon remove-choice">Remove choice</button></div></div></div></div>`;
+            
+            let choiceHTML = `<div class="choice-form choices_container mb-2">
+                                <div class="form-group">
+                                    <div class="row">
+                                        <div class="col-10">
+                                            <div class="input-group">
+                                                <input type="text" name="questions[${questionId}][choices][${choiceCount}][text]" value="${choiceText}" maxlength="200" class="form-control" placeholder="Enter the choice text">
+                                                <div class="input-group-append">
+                                                    <div class="input-group-text">
+                                                        <label class="form-check-label">Correct :</label>
+                                                        <input type="checkbox" name="questions[${questionId}][choices][${choiceCount}][is_correct]"${checkedAttr}>
+                                                    </div>
+                                                    
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-2">
+                                            <button type="button" class="btn btn-danger remove-icon remove-choice">Remove choice</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>`;
             choicesContainer.append(choiceHTML);
         }
+
     
         $(document).on('click', '.remove-choice', function() {
             $(this).closest('.choice-form').remove();

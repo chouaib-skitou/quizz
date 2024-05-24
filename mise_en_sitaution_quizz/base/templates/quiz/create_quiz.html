@@ -7,55 +7,29 @@
     <!-- Font Awesome CSS -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <style>
-        .add-icon, .remove-icon {
-            cursor: pointer;
-            color: blue;
-            margin-left: 10px;
-        }
-        .remove-icon {
-            color: red;
-        }
-        .question_container {
-            margin: 10px;
-            padding: 10px;
-            border-radius: 10px;
-            background-color: rgb(194, 248, 255);
-        }
-        .choices_container {
-            margin: 10px;
-            padding: 10px;
-            border-radius: 10px;
-            background-color: rgb(255, 194, 194);
-        }
-        .btn-success,
-        .btn-danger {
-            color: white;
-        }
-    </style>
+
 </head>
+{% load static %}
+{% block style %}
+
+<link rel="stylesheet" href="{% static "css/create_quiz.css" %}">
+
+{% endblock style %}
 <body>
+    {% include "components/nav.html" %}
     <div class="container mt-5">
         <h1>Create New Quiz</h1>
         <form method="post" id="quizForm">
             <div class="form-group">
-                <p>
-                    <input type="text" name="title" maxlength="200"
-                           class="form-control" placeholder="Enter the quiz title" required
-                           id="id_title">
-                </p>
-                <p>
-                    <textarea name="description" cols="40" rows="2"
-                              class="form-control" placeholder="Enter a description for the quiz"
-                              id="id_description"></textarea>
-                </p>
+                <p><input type="text" name="title" maxlength="200" class="form-control" placeholder="Enter the quiz title" required id="id_title"></p>
+                <p><textarea name="description" cols="40" rows="2" class="form-control" placeholder="Enter a description for the quiz" id="id_description"></textarea></p>
             </div>
             <div class="row">
                 <div class="col-6">
                     <h2 class="text-left">Questions</h2>
                 </div>
                 <div class="col-6 text-right">
-                    <button type="button" id="add-question" onclick="addQuestion()" class="btn btn-success add-icon" >Add question</button>
+                    <button type="button" id="add-question" onclick="addQuestion()" class="btn btn-success add-icon">Add question</button>
                 </div>
             </div>
             <div id="questions">
@@ -63,9 +37,7 @@
                     <div class="form-group">
                         <div class="row">
                             <div class="col-8">
-                                <p>
-                                    <input type="text" name="questions[0][text]" maxlength="500" class="form-control" placeholder="Enter the question text">
-                                </p>
+                                <input type="text" name="questions[0][text]" maxlength="500" class="form-control" placeholder="Enter the question text">
                             </div>
                             <div class="col-4">
                                 <button type="button" class="btn btn-danger remove-icon remove-question" onclick="removeQuestion(0)">Remove question</button>
@@ -84,16 +56,18 @@
                         <div class="choice-form choices_container mb-2" id="choice-0-0">
                             <div class="form-group">
                                 <div class="row">
-                                    <div class="col-8">
-                                        <p>
+                                    <div class="col-10">
+                                        <div class="input-group">
                                             <input type="text" name="questions[0][choices][0][text]" maxlength="200" class="form-control" placeholder="Enter the choice text">
-                                        </p>
-                                        <p>
-                                            <label for="id_questions_0_choices_0_is_correct">Correct answer:</label>
-                                            <input type="checkbox" name="questions[0][choices][0][is_correct]" class="form-check-input" id="id_questions_0_choices_0_is_correct">
-                                        </p>
+                                            <div class="input-group-append">
+                                                <div class="input-group-text">
+                                                    <input type="checkbox" name="questions[0][choices][0][is_correct]" class="form-check-input" id="id_questions_0_choices_0_is_correct">
+                                                    <label class="form-check-label" for="id_questions_0_choices_0_is_correct">Correct:</label>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
-                                    <div class="col-4">
+                                    <div class="col-2">
                                         <button type="button" class="btn btn-danger remove-icon remove-choice" onclick="removeChoice(0, 0)">Remove choice</button>
                                     </div>
                                 </div>
@@ -102,16 +76,18 @@
                         <div class="choice-form choices_container mb-2" id="choice-0-1">
                             <div class="form-group">
                                 <div class="row">
-                                    <div class="col-8">
-                                        <p>
+                                    <div class="col-10">
+                                        <div class="input-group">
                                             <input type="text" name="questions[0][choices][1][text]" maxlength="200" class="form-control" placeholder="Enter the choice text">
-                                        </p>
-                                        <p>
-                                            <label for="id_questions_0_choices_1_is_correct">Correct answer:</label>
-                                            <input type="checkbox" name="questions[0][choices][1][is_correct]" class="form-check-input" id="id_questions_0_choices_1_is_correct">
-                                        </p>
+                                            <div class="input-group-append">
+                                                <div class="input-group-text">
+                                                    <input type="checkbox" name="questions[0][choices][1][is_correct]" class="form-check-input" id="id_questions_0_choices_1_is_correct">
+                                                    <label class="form-check-label" for="id_questions_0_choices_1_is_correct">Correct:</label>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
-                                    <div class="col-4">
+                                    <div class="col-2">
                                         <button type="button" class="btn btn-danger remove-icon remove-choice" onclick="removeChoice(0, 1)">Remove choice</button>
                                     </div>
                                 </div>
@@ -122,6 +98,10 @@
             </div>
             <button type="submit" class="btn btn-primary">Create Quiz</button>
         </form>
+        <!-- Placeholder pour le message flash -->
+        <div id="flashMessage" style="display:none; position: fixed; top: 20px; left: 50%; transform: translateX(-50%); z-index: 1000; background-color: #f8d7da; color: #721c24; padding: 10px; border-radius: 5px; border: 1px solid #f5c6cb;">
+            <!-- Le message sera injecté ici -->
+        </div>
     </div>
 
     <script>
@@ -133,9 +113,7 @@
                 <div class="form-group">
                     <div class="row">
                         <div class="col-8">
-                            <p>
-                                <input type="text" name="questions[${qIndex}][text]" maxlength="500" class="form-control" placeholder="Enter the question text">
-                            </p>
+                            <input type="text" name="questions[${qIndex}][text]" maxlength="500" class="form-control" placeholder="Enter the question text">
                         </div>
                         <div class="col-4">
                             <button type="button" class="btn btn-danger remove-icon remove-question" onclick="removeQuestion(${qIndex})">Remove question</button>
@@ -151,7 +129,47 @@
                     </div>
                 </div>
                 <div class="choices" id="choices-${qIndex}">
-                    <!-- Choices will be added here -->
+                    <!-- Initial two choices -->
+                    <div class="choice-form choices_container mb-2" id="choice-${qIndex}-0">
+                        <div class="form-group">
+                            <div class="row">
+                                <div class="col-10">
+                                    <div class="input-group">
+                                        <input type="text" name="questions[${qIndex}][choices][0][text]" maxlength="200" class="form-control" placeholder="Enter the choice text">
+                                        <div class="input-group-append">
+                                            <div class="input-group-text">
+                                                <input type="checkbox" name="questions[${qIndex}][choices][0][is_correct]" class="form-check-input" id="id_questions_${qIndex}_choices_0_is_correct">
+                                                <label class="form-check-label" for="id_questions_${qIndex}_choices_0_is_correct">Correct:</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-2">
+                                    <button type="button" class="btn btn-danger remove-icon remove-choice" onclick="removeChoice(${qIndex}, 0)">Remove choice</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="choice-form choices_container mb-2" id="choice-${qIndex}-1">
+                        <div class="form-group">
+                            <div class="row">
+                                <div class="col-10">
+                                    <div class="input-group">
+                                        <input type="text" name="questions[${qIndex}][choices][1][text]" maxlength="200" class="form-control" placeholder="Enter the choice text">
+                                        <div class="input-group-append">
+                                            <div class="input-group-text">
+                                                <input type="checkbox" name="questions[${qIndex}][choices][1][is_correct]" class="form-check-input" id="id_questions_${qIndex}_choices_1_is_correct">
+                                                <label class="form-check-label" for="id_questions_${qIndex}_choices_1_is_correct">Correct:</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-2">
+                                    <button type="button" class="btn btn-danger remove-icon remove-choice" onclick="removeChoice(${qIndex}, 1)">Remove choice</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>`;
             $('#questions').append(questionHTML);
@@ -165,16 +183,18 @@
                 let choiceHTML = `<div class="choice-form choices_container mb-2" id="choice-${questionId}-${choiceCount}">
                     <div class="form-group">
                         <div class="row">
-                            <div class="col-8">
-                                <p>
+                            <div class="col-10">
+                                <div class="input-group">
                                     <input type="text" name="questions[${questionId}][choices][${choiceCount}][text]" maxlength="200" class="form-control" placeholder="Enter the choice text">
-                                </p>
-                                <p>
-                                    <label for="id_questions_${questionId}_choices_${choiceCount}_is_correct">Correct answer:</label>
-                                    <input type="checkbox" name="questions[${questionId}][choices][${choiceCount}][is_correct]" class="form-check-input" id="id_questions_${questionId}_choices_${choiceCount}_is_correct">
-                                </p>
+                                    <div class="input-group-append">
+                                        <div class="input-group-text">
+                                            <input type="checkbox" name="questions[${questionId}][choices][${choiceCount}][is_correct]" class="form-check-input" id="id_questions_${questionId}_choices_${choiceCount}_is_correct">
+                                            <label class="form-check-label" for="id_questions_${questionId}_choices_${choiceCount}_is_correct">Correct:</label>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
-                            <div class="col-4">
+                            <div class="col-2">
                                 <button type="button" class="btn btn-danger remove-icon remove-choice" onclick="removeChoice(${questionId}, ${choiceCount})">Remove choice</button>
                             </div>
                         </div>
@@ -226,7 +246,13 @@
                 dataType: 'json',
                 success: function (response) {
                     console.log(response);
-                    alert('Quiz Created Successfully!');
+                    // Display the flash message
+                    $('#flashMessage').text('Quiz saved successfully! Redirecting...').show();
+                    
+                    // Redirect after 5 seconds
+                    setTimeout(function() {
+                        window.location.href = "{% url 'base:quiz_list' %}";  // Adjust according to your URL
+                    }, 1000);  // 5000 ms = 5 seconds
                 },
                 error: function (error) {
                     console.error('Error:', error);
@@ -234,8 +260,6 @@
                 }
             });
         });
-        
-        
     </script>
 </body>
 </html>

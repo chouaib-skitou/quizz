@@ -1,0 +1,203 @@
+/* Applique box-sizing: border-box à tous les éléments pour inclure padding et border dans la largeur et hauteur totales de l'élément. */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+/* Stylise le corps du document avec une hauteur minimale, une hauteur de 100% de la fenêtre d'affichage, sans marges et avec un dégradé radial comme arrière-plan. */
+body {
+  min-height: 450px;
+  height: 100vh;
+  margin: 0;  
+  background: radial-gradient(ellipse farthest-corner at center top, #f39264 0%, #f2606f 100%);
+  color: #fff;
+  font-family: 'Open Sans', sans-serif;  
+}
+
+/* Stylise le tableau de classement avec une position absolue, centré dans la vue, avec un dégradé linéaire comme arrière-plan. */
+.leaderboard {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 70%;
+  height: 308px;
+  background: linear-gradient(to bottom, #3a404d, #181c26);
+  border-radius: 10px;
+  box-shadow: 0 7px 30px rgba(62, 9, 11, .3);
+}
+
+/* Centrage du texte pour tous les éléments h1. */
+h1 {
+  text-align: center;
+}
+
+/* Stylise le titre dans le tableau de classement avec une taille de police, couleur et padding spécifiques. */
+.leaderboard h1 {
+  font-size: 18px;
+  color: #e1e1e1;
+  padding: 12px 13px 18px;
+}
+
+/* Stylise le SVG utilisé dans le h1 du tableau de classement. */
+.leaderboard h1 svg {
+  width: 25px;
+  height: 26px;
+  position: relative;
+  top: 3px;
+  margin-right: 6px;
+  vertical-align: baseline;
+}
+
+/* Supprime les puces et les marges/paddings par défaut pour la liste dans le tableau de classement. */
+.leaderboard ul {
+  counter-reset: leaderboard;
+  list-style: none; 
+  padding: 0; 
+  margin: 0;
+}
+
+/* Stylise chaque élément de la liste avec une taille de police spécifique et un arrière-plan par défaut. */
+.leaderboard ul li {
+  position: relative;
+  z-index: 1;
+  font-size: 14px;
+  counter-increment: leaderboard;
+  padding: 18px 10px 18px 50px;
+  cursor: pointer;
+  backface-visibility: hidden;
+  transform: translateZ(0) scale(1.0, 1.0);
+  background: #808080;
+}
+
+/* Ajoute un compteur visuel avant chaque élément de la liste dans le tableau de classement. */
+.leaderboard ul li::before {
+  content: counter(leaderboard);
+  position: absolute;
+  z-index: 2;
+  top: 15px;
+  left: 15px;
+  width: 20px;
+  height: 20px;
+  line-height: 20px;
+  color: #c24448;
+  background: #fff;
+  border-radius: 20px;
+  text-align: center;
+}
+
+/* Stylise le marqueur pour chaque joueur dans la liste. */
+.leaderboard ul li mark {
+  position: absolute;
+  z-index: 2;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  padding: 18px 10px 18px 50px;
+  margin: 0;
+  background: none;
+  color: #fff;
+}
+
+/* Ajoute des flèches décoratives aux marqueurs avec des transitions pour l'animation. */
+.leaderboard ul li mark::before,
+.leaderboard ul li mark::after {
+  content: '';
+  position: absolute;
+  z-index: 1;
+  bottom: -11px;
+  left: -9px;
+  border-top: 10px solid #c24448;
+  border-left: 10px solid transparent;
+  transition: all .1s ease-in-out;
+  opacity: 0;
+}
+
+.leaderboard ul li mark::after {
+  left: auto;
+  right: -9px;
+  border-left: none;
+  border-right: 10px solid transparent;
+}
+
+/* Stylise les éléments pour afficher le score de chaque joueur. */
+.leaderboard ul li small {
+  position: relative;
+  z-index: 2;
+  display: block;
+  text-align: right;
+}
+
+/* Ajoute un effet visuel supplémentaire pour chaque élément de la liste lors du survol. */
+.leaderboard ul li::after {
+  content: '';
+  position: absolute;
+  z-index: 1;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: #fa6855;
+  box-shadow: 0 3px 0 rgba(0, 0, 0, .08);
+  transform: scaleX(1.06) scaleY(1.03);
+  transition: all .3s ease-in-out;
+  opacity: 0;
+}
+
+/* Couleurs spécifiques pour les trois premiers éléments de la liste pour les distinguer. */
+.leaderboard ul li:nth-child(1) {
+  background: #fa6855;
+}
+
+.leaderboard ul li:nth-child(1)::after {
+  background: #fa6855;
+}
+
+.leaderboard ul li:nth-child(2) {
+  background: #e0574f;
+}
+
+.leaderboard ul li:nth-child(2)::after {
+  background: #e0574f;
+  box-shadow: 0 2px 0 rgba(0, 0, 0, .08);
+}
+
+.leaderboard ul li:nth-child(2) mark::before,
+.leaderboard ul li:nth-child(2) mark::after {
+  border-top: 6px solid #ba4741;
+  bottom: -7px;
+}
+
+.leaderboard ul li:nth-child(3) {
+  background: #d7514d;
+}
+
+.leaderboard ul li:nth-child(3)::after {
+  background: #d7514d;
+  box-shadow: 0 1px 0 rgba(0, 0, 0, .11);
+}
+
+.leaderboard ul li:nth-child(3) mark::before,
+.leaderboard ul li:nth-child(3) mark::after {
+  border-top: 2px solid #b0433f;
+  bottom: -3px;
+}
+
+/* Effet de survol pour augmenter la visibilité et l'attrait visuel de l'élément survolé. */
+.leaderboard ul li:hover {
+  z-index: 2;
+  overflow: visible;
+}
+
+.leaderboard ul li:hover::after {
+  opacity: 1;
+  transform: scaleX(1.06) scaleY(1.03);
+}
+
+.leaderboard ul li:hover mark::before,
+.leaderboard ul li:hover mark::after {
+  opacity: 1;
+  transition: all .35s ease-in-out;
+}

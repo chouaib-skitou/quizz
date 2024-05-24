@@ -1,22 +1,35 @@
 <!DOCTYPE html>
 <html>
+    {% load static %}
+    {% block style %}
+        <!-- Bootstrap CSS -->
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+        <!-- Font Awesome CSS -->
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        <link rel="stylesheet" href="{% static "css/quiz_detail.css" %}">
+    
+    {% endblock style %}
 <head>
     <title>Quiz Detail</title>
 </head>
 <body>
-    <h1>{{ object.title }}</h1>
-    <p>{{ object.description }}</p>
-    <h2>Questions:</h2>
-    <ul>
-        {% for question in object.questions.all %}
-            <li>{{ question.text }}
-                <ul>
-                    {% for choice in question.choices.all %}
-                        <li>{{ choice.text }} {% if choice.is_correct %}(Correct){% endif %}</li>
-                    {% endfor %}
-                </ul>
-            </li>
-        {% endfor %}
-    </ul>
+    {% include "components/nav.html" %}
+    <div class ="QuestionContainer">
+        <h1>{{ object.title }}</h1>
+        <p>{{ object.description }}</p>
+        <h2>Questions:</h2>
+        <ul>
+            {% for question in object.questions.all %}
+                <li>{{ question.text }}
+                    <ul>
+                        {% for choice in question.choices.all %}
+                            <li>{{ choice.text }} {% if choice.is_correct %}(Correct){% endif %}</li>
+                        {% endfor %}
+                    </ul>
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
 </body>
 </html>
