@@ -17,7 +17,8 @@ from django.urls import reverse
 
 @login_required
 def home(request):
-  return render(request, "home.html")
+    quizzes = Quiz.objects.all()
+    return render(request, 'home.html', {'quizzes': quizzes})
  
 
 def authView(request):
@@ -218,7 +219,7 @@ def create_quiz(request):
 
 @login_required
 def QuizList(request):
-    quizzes = Quiz.objects.all()
+    quizzes = Quiz.objects.filter(creator=request.user)
     return render(request, 'quiz/quiz_list.html', {'quizzes': quizzes})
 
 @login_required

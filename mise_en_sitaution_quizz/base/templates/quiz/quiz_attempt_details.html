@@ -3,7 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <title>Quiz Attempt Details</title>
+    {% load static %}
+    {% block style %}
+    <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <!-- Font Awesome CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="{% static "css/quiz_list.css" %}">
+    {% endblock style %}
     <style>
         body { padding: 20px; }
         .container { max-width: 800px; margin: auto; }
