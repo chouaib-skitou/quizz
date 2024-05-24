@@ -59,19 +59,25 @@
     }
 
     function submitAnswers() {
-        let formData = $('#quizForm').serialize();
-        $.ajax({
-            type: "POST",
-            url: `/submit_quiz/${quizId}/`,
-            data: formData,
-            success: function(response) {
-                alert('Your score: ' + response.score);
-            },
-            error: function() {
+    let formData = $('#quizForm').serialize();
+    $.ajax({
+        type: "POST",
+        url: `/submit_quiz/${quizId}/`,
+        data: formData,
+        success: function(response) {
+            if (response.status === 'ok') {
+                // Redirect to the details page of the quiz attempt
+                window.location.href = response.redirect_url;
+            } else {
                 alert('Error submitting quiz.');
             }
-        });
-    }
+        },
+        error: function(xhr, status, error) {
+            alert('Error submitting quiz: ' + error);
+        }
+    });
+}
+
 </script>
 </body>
 </html>

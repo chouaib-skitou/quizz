@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Quiz Attempt Details</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        body { padding: 20px; }
+        .container { max-width: 800px; margin: auto; }
+        .header { text-align: center; margin-bottom: 20px; }
+        .details { background-color: #f7f7f7; padding: 20px; border-radius: 5px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        .details h2 { color: #333; }
+        .details p { color: #666; }
+    </style>
+</head>
+<body>
+    {% include "components/nav.html" %}
+    <div class="container">
+        <div class="header">
+            <h1>Quiz Attempt Details</h1>
+        </div>
+        <div class="details">
+            <h2>Quiz Title: {{ quiz.title }}</h2>
+            <p>Description: {{ quiz.description }}</p>
+            <p><strong>Date Attempted:</strong> {{ attempt.completed_at|date:"d M Y H:i" }}</p>
+            <p><strong>Score:</strong> {{ attempt.score }}</p>
+            <h3>Questions Attempted:</h3>
+            <ul>
+                {% for answer in attempt.answers.all %}
+                    <li>
+                        <strong>Q:</strong> {{ answer.question.text }}<br>
+                        <strong>Your Answer:</strong> {{ answer.choice.text }} {% if answer.choice.is_correct %}<span style="color: green;">(Correct)</span>{% else %}<span style="color: red;">(Incorrect)</span>{% endif %}
+                    </li>
+                {% empty %}
+                    <li>No answers recorded.</li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+    <div class ="QuestionContainer">
+        <h1>{{ quiz.title }}</h1>
+        <p>{{ quiz.description }}</p>
+        <h2>Questions:</h2>
+        <ul>
+            {% for question in quiz.questions.all %}
+                <li>{{ question.text }}
+                    <ul>
+                        {% for choice in question.choices.all %}
+                            <li>{{ choice.text }} {% if choice.is_correct %}(Correct){% endif %}</li>
+                        {% endfor %}
+                    </ul>
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+</body>
+</html>

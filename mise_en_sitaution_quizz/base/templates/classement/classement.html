@@ -25,10 +25,10 @@
           RANKING
         </h1>
         <ul>
-            {% for joueur in allPlayer %}
+            {% for user in users_with_scores %}
           <li>
-            <mark>{{ joueur }}</mark>
-            <small>{{ joueur.score }}</small>
+            <mark>{{ user.username }}</mark>
+            <small>{{ user.total_score }}</small>
           </li>
           {% endfor %}
         </ul>

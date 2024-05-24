@@ -11,6 +11,9 @@ from django.views.decorators.http import require_POST
 from django.http import JsonResponse
 import json
 from django.db import transaction
+from django.db.models import Sum, Max, Subquery, OuterRef, IntegerField
+from django.contrib.auth.models import User
+from django.urls import reverse
 
 @login_required
 def home(request):
@@ -27,14 +30,20 @@ def authView(request):
   form = UserCreationForm()
  return render(request, "registration/signup.html", {"form": form})
 
-#Create and display players
 def PlayerView(request):
-  # p1 = Player(pseudo= "TRUCMACHIN",score =4 )
-  # p1.save()
-  allPlayer = Player.objects.order_by("score").reverse()
+    # Create a subquery to get the maximum score for each quiz attempt by each user
+    max_scores = QuizAttempt.objects.filter(
+        user=OuterRef('pk')
+    ).order_by('quiz').annotate(
+        max_score=Max('score')
+    ).values('max_score')[:1]  # Gets the highest score per user per quiz
 
-  return render(request, "classement/classement.html", {"allPlayer" : allPlayer })
+    # Annotate each user with the sum of their highest scores from all quizzes
+    users_with_scores = User.objects.annotate(
+        total_score=Sum(Subquery(max_scores, output_field=IntegerField()))
+    ).order_by('-total_score')
 
+    return render(request, "classement/classement.html", {"users_with_scores": users_with_scores})
 
 
 class QuizDetailView(DetailView):
@@ -142,6 +151,12 @@ def get_quiz_details(request, quiz_id):
     }
     return JsonResponse(quiz_data)
 
+@login_required
+def quiz_attempt_details(request, attempt_id):
+    attempt = get_object_or_404(QuizAttempt, id=attempt_id)
+    quiz = attempt.quiz  # Access the quiz directly from the attempt
+    return render(request, 'quiz/quiz_attempt_details.html', {'attempt': attempt, 'quiz': quiz})
+
 @require_POST
 @login_required
 @csrf_exempt
@@ -187,7 +202,8 @@ def submit_quiz(request, quiz_id):
         print("Error during submission:", e)
         return JsonResponse({'error': str(e)}, status=500)
 
-    return JsonResponse({'status': 'ok', 'score': total_score})
+    redirect_url = reverse('base:quiz_attempt_details', args=[quiz_attempt.id])
+    return JsonResponse({'status': 'ok', 'score': total_score, 'redirect_url': redirect_url})
 
 
 @login_required
