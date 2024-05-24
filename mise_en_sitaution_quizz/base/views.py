@@ -4,15 +4,13 @@ from django.contrib.auth.decorators import login_required
 from django.forms import modelformset_factory
 from .forms import QuizForm, QuestionForm, ChoiceForm
 from .models import Quiz, Question, Choice, Player
-from .models import Quiz, QuizAttempt, Question, UserAnswer, Choice, GroupQuizAttempt, UserQuizAttempt
+from .models import Quiz, QuizAttempt, Question, UserAnswer, Choice
 from django.views.generic import DetailView
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
 from django.http import JsonResponse
 import json
 from django.db import transaction
-from django.contrib.auth.models import User
-
 
 @login_required
 def home(request):
@@ -214,78 +212,3 @@ def update_quiz(request, pk):
     return render(request, 'quiz/update_quiz.html', {
         'quiz_id': pk,
     })
-
-
-@csrf_exempt
-def create_group(request):
-    return render(request, 'group/new_group.html')
-
-@csrf_exempt
-def save_group_form(request):
-    if request.method == 'POST':
-        data = json.loads(request.body)
-        group_name = data['name']
-        members_usernames = data['members']
-        members = User.objects.filter(username__in=members_usernames)
-
-        if len(members) < 2:
-            return JsonResponse({'error': 'A group must have at least two members.'}, status=400)
-
-        group = User.objects.create(name=group_name)
-        group.members.set(members)
-        group.save()
-
-        return JsonResponse({'id': group.id, 'name': group.name})
-
-
-@csrf_exempt
-def get_quiz(request, quiz_id):
-    try:
-        quiz = Quiz.objects.get(id=quiz_id)
-        questions = quiz.questions.all()
-        questions_data = []
-
-        for question in questions:
-            choices = question.choices.all()
-            choices_data = [{'id': choice.id, 'text': choice.text} for choice in choices]
-            questions_data.append({
-                'id': question.id,
-                'text': question.text,
-                'choices': choices_data
-            })
-
-        return JsonResponse({
-            'id': quiz.id,
-            'title': quiz.title,
-            'questions': questions_data
-        })
-
-    except Quiz.DoesNotExist:
-        return JsonResponse({'error': 'Quiz not found.'}, status=404)
-
-
-@csrf_exempt
-def submit_quiz(request):
-    if request.method == 'POST':
-        data = json.loads(request.body)
-        answers = data['answers']
-
-        # Assume we get user and group attempt details from the session or another source
-        user = request.user  # Example, depends on your auth setup
-        group_attempt = GroupQuizAttempt.objects.first()  # Example, get the relevant group attempt
-
-        user_attempt = UserQuizAttempt.objects.create(group_attempt=group_attempt, user=user, score=0)
-
-        score = 0
-        for answer in answers:
-            question = Question.objects.get(id=answer['question'])
-            choice = Choice.objects.get(id=answer['choice'])
-            UserAnswer.objects.create(user_attempt=user_attempt, question=question, choice=choice)
-
-            if choice.is_correct:
-                score += 1
-
-        user_attempt.score = score
-        user_attempt.save()
-
-        return JsonResponse({'score': user_attempt.score})
