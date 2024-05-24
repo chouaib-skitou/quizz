@@ -1,8 +1,10 @@
 from django.urls import path, include
-from .views import home, authView, create_quiz, QuizDetailView, QuizList, delete_quiz, update_quiz, save_quiz, get_quiz_json, update_quiz_form, get_quiz_details, submit_quiz, take_quiz, submit_quiz, get_quiz, create_group
+from django.contrib.auth import views as auth_views
+from .views import home, authView, create_quiz, QuizDetailView, QuizList, delete_quiz, update_quiz, save_quiz, get_quiz_json, update_quiz_form, get_quiz_details, submit_quiz, take_quiz, PlayerView, submit_quiz, get_quiz, create_group
 
 app_name = 'base'  # Add this line to define the namespace for your app
 
+#Les url du serveur. On définit leur chemin et ce à qui ils accèdent
 urlpatterns = [
     path("", home, name="home"),
     path("signup/", authView, name="authView"),
@@ -18,5 +20,9 @@ urlpatterns = [
     path('get_quiz_details/<int:quiz_id>/', get_quiz_details, name='get-quiz-details'),
     path('submit_quiz/<int:quiz_id>/', submit_quiz, name='submit-quiz'),
     path('take_quiz/<int:quiz_id>/', take_quiz, name='take_quiz'),
+    path("classement/", PlayerView, name="classement"), 
+    path('logout/', auth_views.LogoutView.as_view(), name='logout'),
+    #Nouvelle page de test. Accès au dossier dans classement,
+    #PlayerView : 
     path('groups/', create_group, name='create_group'),
 ]

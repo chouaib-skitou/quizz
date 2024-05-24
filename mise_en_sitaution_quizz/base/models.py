@@ -86,3 +86,14 @@ class GroupUserAnswer(models.Model):
 
     class Meta:
         unique_together = ('user_attempt', 'question')  # Ensure only one answer per question per user attempt
+#Player class
+class Player(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='player')
+    pseudo = models.CharField(max_length=100)
+    score = models.IntegerField(default=0)
+
+    def __str__(self):
+        return self.pseudo
+def create_player_for_new_user(sender, instance, created, **kwargs):
+    if created:
+        Player.objects.create(user=instance, pseudo=instance.username)
