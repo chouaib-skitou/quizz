@@ -155,21 +155,31 @@ def submit_quiz(request, quiz_id):
             quiz_attempt = QuizAttempt.objects.create(user=user, quiz=quiz, score=0)
             total_score = 0
 
-            for key, values in data.lists():  # Use .lists() to correctly handle multiple values
+            for key, values in data.lists():  # Use .lists() to handle multiple values correctly
                 if key.startswith('question_'):
-                    # Properly extract the question ID
                     question_id = key.split('_')[1].rstrip('[]')  # Strip '[]' from the question ID
-                    for value in values:  # Handle multiple choice values
+                    question = get_object_or_404(Question, pk=question_id)
+                    total_choices = question.choices.count()  # Get the total number of choices for this question
+                    correct_choices = question.choices.filter(is_correct=True).count()  # Count only correct choices
+
+                    # Check if user selected all choices
+                    if len(values) == total_choices:
+                        continue  # Skip scoring this question since all options were selected
+
+                    # Process each choice submitted
+                    for value in values:
                         chosen_choice = get_object_or_404(Choice, pk=value)
-                        correct = chosen_choice.is_correct
                         UserAnswer.objects.create(
                             attempt=quiz_attempt,
                             question_id=question_id,
                             choice=chosen_choice
                         )
-                        if correct:
+                        
+                        # Only increment score if the choice is correct
+                        if chosen_choice.is_correct:
                             total_score += 1
 
+            # Save the calculated score
             quiz_attempt.score = total_score
             quiz_attempt.save()
 
