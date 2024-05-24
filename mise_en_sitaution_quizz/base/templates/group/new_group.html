@@ -4,169 +4,99 @@
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
     <script>
-        document.getElementById('create-group-form').addEventListener('submit', function(event) {
-            event.preventDefault();
-
-            const groupName = document.getElementById('group-name').value;
-            const groupMembers = document.getElementById('group-members').value.split(',').map(member => member.trim());
-
-            // Create the group via AJAX
-            fetch('/api/groups/', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRFToken': getCookie('csrftoken') // Assumes you have CSRF protection enabled
-                },
-                body: JSON.stringify({ name: groupName, members: groupMembers })
-            })
-            .then(response => response.json())
-            .then(data => {
-                console.log('Group created:', data);
-                fetchQuiz();
-            })
-            .catch(error => {
-                console.error('Error:', error);
-            });
-        });
-
-        function fetchQuiz() {
-            // Fetch the quiz via AJAX (assuming there's a quiz available)
-            fetch('/api/quizzes/1/') // Change the URL to match your API endpoint
-            .then(response => response.json())
-            .then(quiz => {
-                document.getElementById('quiz-section').style.display = 'block';
-                document.getElementById('quiz-title').innerText = quiz.title;
-
-                const questionsContainer = document.getElementById('questions-container');
-                questionsContainer.innerHTML = '';
-
-                quiz.questions.forEach(question => {
-                    const questionDiv = document.createElement('div');
-                    questionDiv.classList.add('question');
-
-                    const questionText = document.createElement('p');
-                    questionText.innerText = question.text;
-                    questionDiv.appendChild(questionText);
-
-                    question.choices.forEach(choice => {
-                        const choiceLabel = document.createElement('label');
-                        choiceLabel.innerText = choice.text;
-
-                        const choiceInput = document.createElement('input');
-                        choiceInput.type = 'radio';
-                        choiceInput.name = `question-${question.id}`;
-                        choiceInput.value = choice.id;
-
-                        choiceLabel.prepend(choiceInput);
-                        questionDiv.appendChild(choiceLabel);
-                    });
-
-                    questionsContainer.appendChild(questionDiv);
+        document.addEventListener('DOMContentLoaded', function() {
+            fetchUsers();
+    
+            document.getElementById('add-member').addEventListener('click', function() {
+                const dropdown = document.getElementById('group-members-dropdown');
+                const selectedMembersList = document.getElementById('selected-members');
+                const selectedOptions = Array.from(dropdown.selectedOptions);
+                
+                selectedOptions.forEach(option => {
+                    const li = document.createElement('li');
+                    li.textContent = option.value;
+                    li.dataset.username = option.value;
+                    selectedMembersList.appendChild(li);
                 });
-            })
-            .catch(error => {
-                console.error('Error:', error);
+    
+                // Clear selection
+                dropdown.selectedIndex = -1;
             });
-        }
-
-        document.getElementById('submit-quiz').addEventListener('click', function() {
-            const answers = [];
-
-            document.querySelectorAll('.question').forEach(questionDiv => {
-                const questionId = questionDiv.querySelector('input[type="radio"]').name.split('-')[1];
-                const selectedChoice = questionDiv.querySelector('input[type="radio"]:checked');
-
-                if (selectedChoice) {
-                    answers.push({
-                        question: questionId,
-                        choice: selectedChoice.value
+    
+            document.getElementById('create-group-btn').addEventListener('submit', function(event) {
+                event.preventDefault();  // Prevent the default form submission
+    
+                const groupName = document.getElementById('group-name').value;
+                const selectedMembersList = document.getElementById('selected-members');
+                const groupMembers = Array.from(selectedMembersList.children).map(li => li.dataset.username);
+    
+                // Create the group via AJAX
+                fetch('save_group_form/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': getCookie('csrftoken')  // Ensure CSRF token is handled correctly
+                    },
+                    body: JSON.stringify({ name: groupName, members: groupMembers })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    console.log('Group created:', data);
+                    fetchQuiz();  // Call function to fetch quiz (if required)
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+            });
+    
+            // Function to fetch users and populate the dropdown menu
+            function fetchUsers() {
+                fetch('get_users/')
+                .then(response => response.json())
+                .then(users => {
+                    const dropdown = document.getElementById('group-members-dropdown');
+                    dropdown.innerHTML = '';  // Clear existing options
+    
+                    users.forEach(user => {
+                        const option = document.createElement('option');
+                        option.value = user.username;
+                        option.textContent = user.username;
+                        dropdown.appendChild(option);
                     });
-                }
-            });
-
-            // Submit the quiz answers via AJAX
-            fetch('/api/quiz_attempts/', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRFToken': getCookie('csrftoken') // Assumes you have CSRF protection enabled
-                },
-                body: JSON.stringify({ answers: answers })
-            })
-            .then(response => response.json())
-            .then(data => {
-                console.log('Quiz submitted:', data);
-                alert('Quiz submitted successfully!');
-            })
-            .catch(error => {
-                console.error('Error:', error);
-            });
-        });
-
-        // Helper function to get the CSRF token
-        function getCookie(name) {
-            let cookieValue = null;
-            if (document.cookie && document.cookie !== '') {
-                const cookies = document.cookie.split(';');
-                for (let i = 0; i < cookies.length; i++) {
-                    const cookie = cookies[i].trim();
-                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                        break;
+                })
+                .catch(error => {
+                    console.error('Error fetching users:', error);
+                });
+            }
+            fetchUsers();
+    
+            // Helper function to get the CSRF token
+            function getCookie(name) {
+                let cookieValue = null;
+                if (document.cookie && document.cookie !== '') {
+                    const cookies = document.cookie.split(';');
+                    for (let i = 0; i < cookies.length; i++) {
+                        const cookie = cookies[i].trim();
+                        if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                            cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                            break;
+                        }
                     }
                 }
+                return cookieValue;
             }
-            return cookieValue;
-        }
-
-        document.getElementById('create-group-btn').addEventListener('click', function(event) {
-            event.preventDefault();
-
-            const groupName = document.getElementById('group-name').value;
-            const groupMembers = document.getElementById('group-members').value.split(',').map(member => member.trim());
-
-            // Create the group via AJAX
-            fetch('/api/save_group_form/', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRFToken': getCookie('csrftoken') // Ensure CSRF token is handled correctly
-                },
-                body: JSON.stringify({ name: groupName, members: groupMembers })
-            })
-            .then(response => response.json())
-            .then(data => {
-                console.log('Group created:', data);
-                fetchQuiz();
-            })
-            .catch(error => {
-                console.error('Error:', error);
-            });
-        });
-
-        // Helper function to get the CSRF token
-        function getCookie(name) {
-            let cookieValue = null;
-            if (document.cookie && document.cookie !== '') {
-                const cookies = document.cookie.split(';');
-                for (let i = 0; i < cookies.length; i++) {
-                    const cookie = cookies[i].trim();
-                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                        break;
-                    }
-                }
-            }
-            return cookieValue;
-        }
-
+        });        
     </script>
 {% endblock javascript %}
 
+
+{% load static %}
 {% block style %}
-    {# <link rel="stylesheet" href="{% static "css/home.css" %}"> #}
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <link rel="stylesheet" href="{% static "css/group.css" %}">
 {% endblock style %}
+
+
 {% block title %}
  Quiz app
 {% endblock title %}
@@ -174,20 +104,27 @@
     {% include "components/nav.html" %}
     <div class="container mt-3">
         <h1>Create a Group</h1>
-    <form id="create-group-form">
-        <label for="group-name">Group Name:</label>
-        <input type="text" id="group-name" name="group-name" required>
-        <label for="group-members">Group Members (comma-separated usernames):</label>
-        <input type="text" id="group-members" name="group-members" required>
-        <button type="button" id="create-group-btn">Create Group</button>
-    </form>
+        
+        <form id="create-group-form">
+            <div class="form-group">
+                <label for="group-name">Group Name:</label>
+                <input type="text" class="form-control" id="group-name" name="group-name" required>
+            </div>
+            <div class="form-group">
+                <label for="group-members-dropdown">Add Group Members:</label>
+                <select id="group-members-dropdown" class="form-control" size="5" multiple></select>
+            </div>
+            <button type="button" class="btn btn-primary" id="add-member">Add Member</button>
+            <ul id="selected-members" class="list-group"></ul>
+            <button type="submit" class="btn btn-success" id="create-group-btn">Create Group</button>
+        </form> 
 
-    <h1>Play Quiz</h1>
-    <div id="quiz-section" style="display: none;">
-        <h2 id="quiz-title"></h2>
-        <div id="questions-container"></div>
-        <button id="submit-quiz">Submit Quiz</button>
-    </div>
+        <h1>Play Quiz</h1>
+        <div id="quiz-section" style="display: none;">
+            <h2 id="quiz-title"></h2>
+            <div id="questions-container"></div>
+            <button id="submit-quiz">Submit Quiz</button>
+        </div>
 
     </div>
 {% endblock content %}
